@@ -139,7 +139,7 @@ function makeSimpleToolPruningMessages(includeTrailingAssistant = false): AgentM
 type ContextHandler = (
   event: { messages: AgentMessage[] },
   ctx: ExtensionContext,
-) => { messages: AgentMessage[] } | undefined;
+) => Promise<{ messages: AgentMessage[] } | undefined> | { messages: AgentMessage[] } | undefined;
 
 function createContextHandler(): ContextHandler {
   let handler: ContextHandler | undefined;
@@ -335,7 +335,7 @@ describe("context-pruning", () => {
     const messages = makeSimpleToolPruningMessages(true);
 
     const handler = createContextHandler();
-    const result = runContextHandler(handler, messages, sessionManager);
+    const result = await runContextHandler(handler, messages, sessionManager);
 
     if (!result) {
       throw new Error("expected handler to return messages");
@@ -343,7 +343,7 @@ describe("context-pruning", () => {
     expect(toolText(findToolResult(result.messages, "t1"))).toBe("[cleared]");
   });
 
-  it("cache-ttl prunes once and resets the ttl window", () => {
+  it("cache-ttl prunes once and resets the ttl window", async () => {
     const sessionManager = {};
     const lastTouch = Date.now() - DEFAULT_CONTEXT_PRUNING_SETTINGS.ttlMs - 1000;
 
@@ -358,7 +358,7 @@ describe("context-pruning", () => {
     const messages = makeSimpleToolPruningMessages();
 
     const handler = createContextHandler();
-    const first = runContextHandler(handler, messages, sessionManager);
+    const first = await runContextHandler(handler, messages, sessionManager);
     if (!first) {
       throw new Error("expected first prune");
     }
@@ -370,7 +370,7 @@ describe("context-pruning", () => {
     }
     expect(runtime.lastCacheTouchAt).toBeGreaterThan(lastTouch);
 
-    const second = runContextHandler(handler, messages, sessionManager);
+    const second = await runContextHandler(handler, messages, sessionManager);
     expect(second).toBeUndefined();
   });
 

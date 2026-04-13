@@ -176,6 +176,17 @@ describe("context-pruning", () => {
     expect(computeEffectiveSettings({})).toBeNull();
   });
 
+  it("defaults micro-compression settings when cache-ttl pruning is enabled", () => {
+    const settings = computeEffectiveSettings({ mode: "cache-ttl" });
+
+    expect(settings?.microCompress).toEqual({
+      enabled: true,
+      stripAnsi: true,
+      trimTrailingWhitespace: true,
+      collapseBlankLines: true,
+    });
+  });
+
   it("does not touch tool results after the last N assistants", () => {
     const messages: AgentMessage[] = [
       makeUser("u1"),

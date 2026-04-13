@@ -4309,6 +4309,24 @@ export const GENERATED_BASE_CONFIG_SCHEMA: BaseConfigSchemaResponse = {
                     },
                     additionalProperties: false,
                   },
+                  microCompress: {
+                    type: "object",
+                    properties: {
+                      enabled: {
+                        type: "boolean",
+                      },
+                      stripAnsi: {
+                        type: "boolean",
+                      },
+                      trimTrailingWhitespace: {
+                        type: "boolean",
+                      },
+                      collapseBlankLines: {
+                        type: "boolean",
+                      },
+                    },
+                    additionalProperties: false,
+                  },
                 },
                 additionalProperties: false,
               },
